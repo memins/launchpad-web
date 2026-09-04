@@ -12,8 +12,10 @@ Stack: **Next.js App Router**, **TypeScript**, **Tailwind CSS 4**, **Supabase Au
 - First-run onboarding wizard (display name + optional workspace) gated by middleware
 - Protected `/dashboard` via middleware
 - Kit marketing homepage (hero, what’s included, audience, stack, $99 pricing, FAQ) with a Gumroad Buy CTA
+- Post-purchase `/thanks` page (optional Gumroad redirect — invite + setup, no license server)
 - Stripe Checkout, signed webhook, and a `/dashboard/billing` plan status
 - i18n-ready `/en` and `/de` landing variants
+- Seller docs for the Gumroad listing and a go-live checklist (`docs/gumroad.md`, `docs/ship-checklist.md`)
 - Plop generators for pages, components, hooks, and API routes
 
 ## 10-minute setup
@@ -101,7 +103,7 @@ Copy `.env.example` → `.env.local`. Every key is documented there:
 | Variable | Required to boot | Where to get it |
 | --- | --- | --- |
 | `NEXT_PUBLIC_APP_URL` | Yes | Your site origin |
-| `NEXT_PUBLIC_GUMROAD_URL` | Optional (homepage Buy CTA) | Your Gumroad product URL. Falls back to `https://gumroad.com`. Swap this when you publish the kit listing — or when you rebrand the homepage for your own product. |
+| `NEXT_PUBLIC_GUMROAD_URL` | Optional (homepage Buy CTA) | Your Gumroad product URL. Falls back to `https://gumroad.com`. Placeholder only until you publish — see [docs/gumroad.md](./docs/gumroad.md). |
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → Settings → API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Admin/server only | Supabase → Settings → API |
@@ -134,6 +136,7 @@ One App Router tree — no locale-prefixed duplicates:
 | Path | Purpose |
 | --- | --- |
 | `/` | Kit storefront (Buy on Gumroad + demo login). `/en` and `/de` reuse the same page. |
+| `/thanks` | Post-purchase recap (Gumroad redirect). Invite + setup; no license check. |
 | `/auth/login` | Email + OAuth sign-in (included SaaS demo) |
 | `/auth/register` | Email + OAuth sign-up |
 | `/auth/callback` | Supabase OAuth / magic-link exchange (first-timers → `/onboarding`) |
@@ -155,9 +158,18 @@ npm run lint      # ESLint
 npm run generate  # Plop scaffolding
 ```
 
+## Selling the kit (seller)
+
+Buyer checkout is **Gumroad**, not Stripe and not an in-app purchase API. This repo does not claim a live listing — use a placeholder URL until you publish.
+
+1. Create the $99 one-time product and paste the dashboard URL into `NEXT_PUBLIC_GUMROAD_URL` — [docs/gumroad.md](./docs/gumroad.md).
+2. **Primary delivery:** Gumroad content/receipt email → buyer replies with a GitHub username → you send a **private collaborator invite**. **Backup:** a tagged-release zip attached to the Gumroad product.
+3. Set Gumroad’s redirect-after-purchase to `https://YOUR_DOMAIN/thanks`.
+4. Walk [docs/ship-checklist.md](./docs/ship-checklist.md) (migrations, Stripe keys, Gumroad URL, Vercel env) before you publish.
+
 ## License
 
-LaunchPad Web is a **commercial kit**, not MIT. Buyers may build and ship apps. You may not resell or redistribute the kit itself. See [`LICENSE`](./LICENSE).
+LaunchPad Web is a **commercial kit**, not MIT. Buyers may build and ship apps. You may not resell or redistribute the kit itself (including a fulfillment zip). The seller may deliver a private GitHub invite and/or a purchaser-only archive. See [`LICENSE`](./LICENSE).
 
 ## Acknowledgements
 

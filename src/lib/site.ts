@@ -9,6 +9,8 @@ export const KIT_NAME = 'LaunchPad Web';
 export const KIT_PRICE = '$99';
 export const KIT_PRICE_LABEL = '$99 one-time';
 export const GITHUB_REPO_URL = 'https://github.com/memins/launchpad-web';
+/** Post-purchase landing. Point Gumroad’s “redirect after purchase” here. */
+export const THANKS_PATH = '/thanks';
 
 /** Public fallback when the env var is unset — replace it before you sell. */
 export const DEFAULT_GUMROAD_URL = 'https://gumroad.com';
