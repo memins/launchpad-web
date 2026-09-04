@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  DEFAULT_APP_PATH,
+  ONBOARDING_PATH,
+  hasCompletedOnboarding,
+  isSafeInternalPath,
+} from '@/lib/auth-redirect';
 import { updateSession } from '@/lib/supabase-middleware';
 
-const PROTECTED_ROUTES = ['/dashboard', '/settings', '/admin'];
+const PROTECTED_ROUTES = ['/dashboard', '/settings', '/admin', ONBOARDING_PATH];
 const ADMIN_ROUTES = ['/admin'];
+const APP_SHELL_ROUTES = ['/dashboard', '/settings', '/admin'];
 
 const matchesPrefix = (pathname: string, prefixes: string[]) =>
   prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
@@ -21,18 +28,34 @@ export const middleware = async (request: NextRequest) => {
 
   const isProtectedRoute = matchesPrefix(pathname, PROTECTED_ROUTES);
   const isAdminRoute = matchesPrefix(pathname, ADMIN_ROUTES);
+  const isAppShell = matchesPrefix(pathname, APP_SHELL_ROUTES);
+  const isOnboarding = pathname === ONBOARDING_PATH;
 
   if (isProtectedRoute && !user) {
     const redirectUrl = new URL('/auth/login', request.url);
-    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+    const requested = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+    if (isSafeInternalPath(requested)) {
+      redirectUrl.searchParams.set('redirectTo', requested);
+    }
     return NextResponse.redirect(redirectUrl);
   }
 
   if (isAdminRoute && user) {
     const userRole = user.user_metadata?.role;
     if (userRole !== 'admin') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
+      return NextResponse.redirect(new URL(DEFAULT_APP_PATH, request.url));
     }
+  }
+
+  // First-timers (and anyone who has not finished/skipped) stay in the wizard
+  // instead of landing on an empty dashboard. Metadata is the fast gate;
+  // persistOnboarding also writes public.profiles.
+  if (user && isAppShell && !hasCompletedOnboarding(user)) {
+    return NextResponse.redirect(new URL(ONBOARDING_PATH, request.url));
+  }
+
+  if (user && isOnboarding && hasCompletedOnboarding(user)) {
+    return NextResponse.redirect(new URL(DEFAULT_APP_PATH, request.url));
   }
 
   // Keep the supabase client referenced so tree-shaking does not drop the session refresh.

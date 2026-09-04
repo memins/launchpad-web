@@ -9,6 +9,7 @@ Stack: **Next.js App Router**, **TypeScript**, **Tailwind CSS 4**, **Supabase Au
 ## What’s in the kit
 
 - Email / password + OAuth-ready auth with cookie sessions (`@supabase/ssr`)
+- First-run onboarding wizard (display name + optional workspace) gated by middleware
 - Protected `/dashboard` via middleware
 - Marketing landing you can rebrand in one pass
 - Stripe client helper (Checkout + webhooks come in a follow-up drop)
@@ -35,6 +36,8 @@ npm install
 5. **Authentication → URL configuration**
    - Site URL: `http://localhost:3000`
    - Redirect URLs: `http://localhost:3000/auth/callback`
+6. **SQL Editor**: open `supabase/migrations/20240904210000_create_profiles.sql`, paste it, and run it.
+   This creates `public.profiles` (display name, workspace, onboarding timestamp), RLS so users only touch their own row, and a trigger that inserts a profile on signup. No extra env vars.
 
 ### 3. Stripe (~3 minutes)
 
@@ -53,7 +56,7 @@ Create a [Resend](https://resend.com) API key and set `RESEND_API_KEY` plus `RES
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Sign up at `/auth/register`, then open `/dashboard`.
+Open [http://localhost:3000](http://localhost:3000). Sign up at `/auth/register` — new users land on `/onboarding` (complete or skip), then `/dashboard`. Returning users who already finished onboarding go straight to the app.
 
 ## Environment variables
 
@@ -94,8 +97,10 @@ One App Router tree — no locale-prefixed duplicates:
 | --- | --- |
 | `/auth/login` | Email + OAuth sign-in |
 | `/auth/register` | Email + OAuth sign-up |
-| `/auth/callback` | Supabase OAuth / magic-link exchange |
-| `/dashboard` | Session-gated app shell |
+| `/auth/callback` | Supabase OAuth / magic-link exchange (first-timers → `/onboarding`) |
+| `/onboarding` | Short first-run wizard (complete or skip; session-gated) |
+| `/dashboard` | Session-gated app shell (redirects here after onboarding) |
+| `/dashboard/profile` | Edit the same profile fields collected during onboarding |
 
 ## Scripts
 

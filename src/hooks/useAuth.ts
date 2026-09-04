@@ -97,7 +97,7 @@ export function useAuth(): UseAuthReturn {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?redirectTo=/onboarding`,
       },
     });
     return { error };
@@ -107,7 +107,7 @@ export function useAuth(): UseAuthReturn {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'apple',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?redirectTo=/onboarding`,
       },
     });
     return { error };

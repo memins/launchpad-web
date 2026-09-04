@@ -1,5 +1,6 @@
 import { createBrowserClient as createSSRBrowserClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/lib/database.types';
 
 const getSupabaseUrl = () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -21,7 +22,7 @@ const getSupabaseAnonKey = () => {
  * Browser / client-component Supabase client (cookie-backed via @supabase/ssr).
  */
 export const createBrowserClient = () => {
-  return createSSRBrowserClient(getSupabaseUrl(), getSupabaseAnonKey());
+  return createSSRBrowserClient<Database>(getSupabaseUrl(), getSupabaseAnonKey());
 };
 
 /**
@@ -36,7 +37,7 @@ export const createAdminClient = () => {
     );
   }
 
-  return createClient(getSupabaseUrl(), supabaseServiceKey, {
+  return createClient<Database>(getSupabaseUrl(), supabaseServiceKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

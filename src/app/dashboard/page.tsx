@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getDisplayName, getWorkspaceName } from '@/lib/auth-redirect';
 import { useAuth } from '@/hooks/useAuth';
 import { 
   UserPlus, 
@@ -93,9 +94,11 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Welcome back, {user?.email?.split('@')[0] || 'User'}</h1>
+        <h1 className="text-2xl font-bold">Welcome back, {getDisplayName(user)}</h1>
         <p className="mt-1 text-muted-foreground">
-          Here&apos;s what&apos;s happening with your account today.
+          {getWorkspaceName(user)
+            ? `${getWorkspaceName(user)} · here is what is happening today.`
+            : 'Here is what is happening with your account today.'}
         </p>
       </div>
 

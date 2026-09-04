@@ -55,7 +55,7 @@ const RegisterPage = () => {
         return;
       }
 
-      router.push('/dashboard');
+      router.push('/onboarding');
       toast.success('Registration successful', 'Welcome to LaunchPad Web.');
     } catch (error) {
       console.error('Registration error:', error);
@@ -71,7 +71,7 @@ const RegisterPage = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?redirectTo=/dashboard`,
+          redirectTo: `${window.location.origin}/auth/callback?redirectTo=/onboarding`,
         },
       });
 
