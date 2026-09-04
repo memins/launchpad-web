@@ -11,8 +11,8 @@ const features = [
     description: 'Middleware-gated /dashboard with a role hook you can extend for admin routes.',
   },
   {
-    title: 'Stripe-ready helper',
-    description: 'Named LaunchPad Web in Stripe appInfo. Checkout and webhooks are the next drop.',
+    title: 'Stripe Checkout + billing',
+    description: 'Hosted Checkout, signed webhooks, and a dashboard plan status your SaaS can reuse.',
   },
   {
     title: 'Landing you can rebrand',
@@ -32,7 +32,7 @@ const included = [
   'Next.js App Router + TypeScript',
   'Supabase Auth with @supabase/ssr',
   'Dashboard shell + session gate',
-  'Stripe helper (no fake Checkout yet)',
+  'Stripe Checkout, webhook, and plan status',
   'Buyer README and .env.example',
   'Commercial kit license',
 ];
