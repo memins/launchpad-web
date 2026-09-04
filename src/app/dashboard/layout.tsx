@@ -3,7 +3,6 @@
 import { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { createBrowserClient } from '@/lib/supabase';
 import { 
   Home, 
   User, 
@@ -67,7 +66,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex min-h-0 flex-1 flex-col border-r border-border bg-card">
           <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
             <div className="flex flex-shrink-0 items-center px-4">
-              <span className="text-xl font-bold">SaaS Boilerplate</span>
+              <span className="text-xl font-bold">LaunchPad Web</span>
             </div>
             <nav className="mt-5 flex-1 space-y-1 px-2">
               {navigation.map((item) => {
@@ -127,7 +126,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="fixed inset-y-0 left-0 w-full max-w-xs bg-card">
             <div className="flex h-full flex-col overflow-y-auto">
               <div className="flex items-center justify-between px-4 py-5">
-                <span className="text-xl font-bold">SaaS Boilerplate</span>
+                <span className="text-xl font-bold">LaunchPad Web</span>
                 <button
                   type="button"
                   className="-mr-2 rounded-md p-2 text-muted-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"

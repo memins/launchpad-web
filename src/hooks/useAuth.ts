@@ -39,7 +39,7 @@ export function useAuth(): UseAuthReturn {
       setUser(session?.user ?? null);
       
       // Check if user has admin role
-      setIsAdmin(session?.user?.user_metadata?.role === 'admin' ?? false);
+      setIsAdmin(session?.user?.user_metadata?.role === 'admin');
       
       setIsLoading(false);
     };
@@ -51,7 +51,7 @@ export function useAuth(): UseAuthReturn {
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        setIsAdmin(session?.user?.user_metadata?.role === 'admin' ?? false);
+        setIsAdmin(session?.user?.user_metadata?.role === 'admin');
         setIsLoading(false);
         
         // Refresh the page to update server-side session state
