@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { getDisplayName, getWorkspaceName } from '@/lib/auth-redirect';
 import { useAuth } from '@/hooks/useAuth';
 import { 
@@ -169,9 +170,12 @@ export default function DashboardPage() {
                 <button className="w-full rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
                   Invite Team Member
                 </button>
-                <button className="w-full rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-                  Update Payment Method
-                </button>
+                <Link
+                  href="/dashboard/billing"
+                  className="block w-full rounded-md border border-border bg-card px-4 py-2 text-center text-sm font-medium text-foreground hover:bg-muted"
+                >
+                  Manage billing
+                </Link>
                 <button className="w-full rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
                   View Reports
                 </button>

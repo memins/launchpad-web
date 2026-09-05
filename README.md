@@ -4,7 +4,7 @@ A paid, one-time **Next.js SaaS ship kit** — not a generic boilerplate. Clone 
 
 **Price:** $99 on [Gumroad](https://gumroad.com) (one-time). Built by [Emin Sahin](https://github.com/memins).
 
-Stack: **Next.js App Router**, **TypeScript**, **Tailwind CSS 4**, **Supabase Auth (`@supabase/ssr`)**, **Stripe helper**, **Resend**.
+Stack: **Next.js App Router**, **TypeScript**, **Tailwind CSS 4**, **Supabase Auth (`@supabase/ssr`)**, **Stripe Checkout + webhooks**, **Resend**.
 
 ## What’s in the kit
 
@@ -12,7 +12,7 @@ Stack: **Next.js App Router**, **TypeScript**, **Tailwind CSS 4**, **Supabase Au
 - First-run onboarding wizard (display name + optional workspace) gated by middleware
 - Protected `/dashboard` via middleware
 - Marketing landing you can rebrand in one pass
-- Stripe client helper (Checkout + webhooks come in a follow-up drop)
+- Stripe Checkout, signed webhook, and a `/dashboard/billing` plan status
 - i18n-ready `/en` and `/de` landing variants
 - Plop generators for pages, components, hooks, and API routes
 
@@ -36,15 +36,51 @@ npm install
 5. **Authentication → URL configuration**
    - Site URL: `http://localhost:3000`
    - Redirect URLs: `http://localhost:3000/auth/callback`
-6. **SQL Editor**: open `supabase/migrations/20240904210000_create_profiles.sql`, paste it, and run it.
-   This creates `public.profiles` (display name, workspace, onboarding timestamp), RLS so users only touch their own row, and a trigger that inserts a profile on signup. No extra env vars.
+6. **SQL Editor**: paste and run these two files (profiles first):
+   - `supabase/migrations/20240904210000_create_profiles.sql` — `public.profiles` (display name, workspace, onboarding), RLS, signup trigger.
+   - `supabase/migrations/20240904220000_create_subscriptions.sql` — `public.subscriptions` (Stripe customer / plan / status). Users can **select** their own row; the webhook writes with `SUPABASE_SERVICE_ROLE_KEY`.
 
-### 3. Stripe (~3 minutes)
+### 3. Stripe (~5 minutes)
+
+This kit bills **your SaaS users** (not the $99 kit purchase). Pattern: hosted Checkout. A **recurring** `STRIPE_PRICE_ID` opens `mode: subscription`. A **one-time** price opens `mode: payment` and stores `status = active` as lifetime access.
 
 1. Create a [Stripe](https://stripe.com) account and toggle **test mode**.
-2. **Developers → API keys**: set `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY`.
-3. Create a product / price and paste the price id into `STRIPE_PRICE_ID` (used when Checkout ships).
-4. Leave `STRIPE_WEBHOOK_SECRET` blank until you add a webhook endpoint.
+2. **Developers → API keys**: set `STRIPE_SECRET_KEY` and (optional) `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`. Hosted Checkout only needs the secret key.
+3. **Product catalog**: create a Product + Price. Paste the `price_...` id into `STRIPE_PRICE_ID`.
+4. **Settings → Billing → Customer portal**: turn the portal on so “Manage billing” works (invoices, cancel, payment method).
+5. Webhook — local and production (below).
+
+#### Local webhook (Stripe CLI)
+
+Checkout success is persisted by the webhook, not by the redirect. Forward events while `npm run dev` is running:
+
+```bash
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+```
+
+Copy the CLI `whsec_...` into `STRIPE_WEBHOOK_SECRET` in `.env.local` and restart Next.js. Trigger a test payment with card `4242 4242 4242 4242`, any future expiry, any CVC.
+
+Useful events this route handles:
+
+- `checkout.session.completed`
+- `customer.subscription.created` / `updated` / `deleted`
+- `invoice.paid` / `invoice.payment_failed`
+
+```bash
+stripe trigger checkout.session.completed
+```
+
+CLI trigger events do not include your app `user_id` metadata — use a real Checkout from `/dashboard/billing` to see the row update.
+
+#### Production webhook
+
+Stripe Dashboard → **Developers → Webhooks → Add endpoint**:
+
+- URL: `https://your-domain.com/api/webhooks/stripe`
+- Events: the same list as above
+- Signing secret → `STRIPE_WEBHOOK_SECRET` on Vercel (Production + Preview)
+
+The webhook writes with `SUPABASE_SERVICE_ROLE_KEY` (bypasses RLS). Keep that key server-only.
 
 ### 4. Email (optional)
 
@@ -68,10 +104,10 @@ Copy `.env.example` → `.env.local`. Every key is documented there:
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → Settings → API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Admin/server only | Supabase → Settings → API |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | For Stripe helper | Stripe → API keys |
-| `STRIPE_SECRET_KEY` | For Stripe helper | Stripe → API keys |
-| `STRIPE_WEBHOOK_SECRET` | Later (Checkout) | Stripe → Webhooks |
-| `STRIPE_PRICE_ID` | Later (Checkout) | Stripe → Products |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Optional (Stripe.js later) | Stripe → API keys |
+| `STRIPE_SECRET_KEY` | Checkout + webhook | Stripe → API keys |
+| `STRIPE_WEBHOOK_SECRET` | Webhook signature | Stripe CLI or Dashboard → Webhooks |
+| `STRIPE_PRICE_ID` | Checkout line item | Stripe → Product catalog |
 | `RESEND_API_KEY` | Optional | Resend dashboard |
 | `RESEND_FROM_EMAIL` | Optional | Your sending domain |
 
@@ -82,7 +118,8 @@ Copy `.env.example` → `.env.local`. Every key is documented there:
 3. Add the same env vars from `.env.local` (Production + Preview).
 4. Set `NEXT_PUBLIC_APP_URL` to `https://your-domain.vercel.app`.
 5. In Supabase Auth URL config, add `https://your-domain.vercel.app` and `https://your-domain.vercel.app/auth/callback`.
-6. Deploy. Framework preset: **Next.js**.
+6. Add a Stripe webhook endpoint for `https://your-domain.vercel.app/api/webhooks/stripe` and set `STRIPE_WEBHOOK_SECRET`.
+7. Deploy. Framework preset: **Next.js**.
 
 ```bash
 npm run build
@@ -101,6 +138,10 @@ One App Router tree — no locale-prefixed duplicates:
 | `/onboarding` | Short first-run wizard (complete or skip; session-gated) |
 | `/dashboard` | Session-gated app shell (redirects here after onboarding) |
 | `/dashboard/profile` | Edit the same profile fields collected during onboarding |
+| `/dashboard/billing` | Plan status, Upgrade → Checkout, Manage billing → Customer Portal |
+| `/api/stripe/checkout` | Authenticated: create a Checkout Session and redirect URL |
+| `/api/stripe/portal` | Authenticated: Customer Portal session |
+| `/api/webhooks/stripe` | Stripe-signed webhook (no cookies; service role writes `subscriptions`) |
 
 ## Scripts
 
