@@ -1,36 +1,46 @@
+import { createBrowserClient as createSSRBrowserClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/lib/database.types';
 
-/**
- * Create a Supabase client for server-side usage
- * Uses service role key for admin privileges
- */
-export const createAdminClient = () => {
+const getSupabaseUrl = () => {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Supabase admin client requires SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL environment variables');
+  if (!supabaseUrl) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL');
   }
-  
-  return createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    }
-  });
+  return supabaseUrl;
+};
+
+const getSupabaseAnonKey = () => {
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!supabaseAnonKey) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+  return supabaseAnonKey;
 };
 
 /**
- * Create a Supabase client for client-side usage
- * Uses anon key for limited privileges
+ * Browser / client-component Supabase client (cookie-backed via @supabase/ssr).
  */
 export const createBrowserClient = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Supabase browser client requires NEXT_PUBLIC_SUPABASE_ANON_KEY and NEXT_PUBLIC_SUPABASE_URL environment variables');
+  return createSSRBrowserClient<Database>(getSupabaseUrl(), getSupabaseAnonKey());
+};
+
+/**
+ * Service-role client for trusted server code only. Do not import this from Client Components.
+ */
+export const createAdminClient = () => {
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseServiceKey) {
+    throw new Error(
+      'Supabase admin client requires SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL'
+    );
   }
 
-  return createClient(supabaseUrl, supabaseAnonKey);
-}; 
+  return createClient<Database>(getSupabaseUrl(), supabaseServiceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+};

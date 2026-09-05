@@ -3,7 +3,6 @@
 import { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { createBrowserClient } from '@/lib/supabase';
 import { 
   Home, 
   User, 
@@ -17,6 +16,7 @@ import {
   Sun
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { getDisplayName } from '@/lib/auth-redirect';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/components/ui/Toaster';
 
@@ -67,7 +67,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex min-h-0 flex-1 flex-col border-r border-border bg-card">
           <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
             <div className="flex flex-shrink-0 items-center px-4">
-              <span className="text-xl font-bold">SaaS Boilerplate</span>
+              <span className="text-xl font-bold">LaunchPad Web</span>
             </div>
             <nav className="mt-5 flex-1 space-y-1 px-2">
               {navigation.map((item) => {
@@ -98,11 +98,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="flex flex-1 items-center justify-between">
               <div className="flex items-center">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  {user?.email?.charAt(0).toUpperCase() || 'U'}
+                  {getDisplayName(user).charAt(0).toUpperCase()}
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium text-foreground">
-                    {user?.email?.split('@')[0] || 'User'}
+                    {getDisplayName(user)}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {user?.email || 'user@example.com'}
@@ -127,7 +127,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="fixed inset-y-0 left-0 w-full max-w-xs bg-card">
             <div className="flex h-full flex-col overflow-y-auto">
               <div className="flex items-center justify-between px-4 py-5">
-                <span className="text-xl font-bold">SaaS Boilerplate</span>
+                <span className="text-xl font-bold">LaunchPad Web</span>
                 <button
                   type="button"
                   className="-mr-2 rounded-md p-2 text-muted-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
@@ -166,11 +166,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="flex flex-shrink-0 border-t border-border p-4">
                 <div className="flex flex-1 items-center">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    {user?.email?.charAt(0).toUpperCase() || 'U'}
+                    {getDisplayName(user).charAt(0).toUpperCase()}
                   </div>
                   <div className="ml-3">
                     <p className="text-base font-medium text-foreground">
-                      {user?.email?.split('@')[0] || 'User'}
+                      {getDisplayName(user)}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {user?.email || 'user@example.com'}

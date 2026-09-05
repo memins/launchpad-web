@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useTranslations } from 'next-intl';
 
@@ -30,7 +32,7 @@ export default function ErrorMessage({
   if (!displayMessage && messageKey) {
     try {
       displayMessage = t(messageKey);
-    } catch (error) {
+    } catch {
       // If translation not found, use the fallback
       displayMessage = fallback;
     }
