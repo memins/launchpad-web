@@ -19,6 +19,7 @@ import {
   KIT_NAME,
   KIT_PRICE,
   KIT_PRICE_LABEL,
+  THANKS_PATH,
   getGumroadUrl,
 } from '@/lib/site';
 
@@ -129,7 +130,7 @@ const faqs = [
   {
     question: 'What do I get after checkout?',
     answer:
-      'You pay on Gumroad and receive the kit through that listing. This page does not automate fulfillment (no GitHub invite from the Buy button). Point NEXT_PUBLIC_GUMROAD_URL at your product URL when you publish.',
+      'You pay on Gumroad and receive the kit through that listing. This page does not automate fulfillment (no GitHub invite from the Buy button). After checkout, Gumroad can redirect to /thanks for invite and setup steps. Point NEXT_PUBLIC_GUMROAD_URL at your product URL when you publish.',
   },
   {
     question: 'Can I use it for client work?',
@@ -513,6 +514,11 @@ const MarketingLanding = ({ headerExtra }: MarketingLandingProps) => {
               <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                 <li>Commercial kit license</li>
                 <li>Build apps. Don’t resell the kit.</li>
+                <li>
+                  <Link href={THANKS_PATH} className="hover:text-foreground">
+                    After you buy
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
