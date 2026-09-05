@@ -11,7 +11,7 @@ Stack: **Next.js App Router**, **TypeScript**, **Tailwind CSS 4**, **Supabase Au
 - Email / password + OAuth-ready auth with cookie sessions (`@supabase/ssr`)
 - First-run onboarding wizard (display name + optional workspace) gated by middleware
 - Protected `/dashboard` via middleware
-- Marketing landing you can rebrand in one pass
+- Kit marketing homepage (hero, what’s included, audience, stack, $99 pricing, FAQ) with a Gumroad Buy CTA
 - Stripe Checkout, signed webhook, and a `/dashboard/billing` plan status
 - i18n-ready `/en` and `/de` landing variants
 - Plop generators for pages, components, hooks, and API routes
@@ -101,6 +101,7 @@ Copy `.env.example` → `.env.local`. Every key is documented there:
 | Variable | Required to boot | Where to get it |
 | --- | --- | --- |
 | `NEXT_PUBLIC_APP_URL` | Yes | Your site origin |
+| `NEXT_PUBLIC_GUMROAD_URL` | Optional (homepage Buy CTA) | Your Gumroad product URL. Falls back to `https://gumroad.com`. Swap this when you publish the kit listing — or when you rebrand the homepage for your own product. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → Settings → API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Admin/server only | Supabase → Settings → API |
@@ -132,7 +133,8 @@ One App Router tree — no locale-prefixed duplicates:
 
 | Path | Purpose |
 | --- | --- |
-| `/auth/login` | Email + OAuth sign-in |
+| `/` | Kit storefront (Buy on Gumroad + demo login). `/en` and `/de` reuse the same page. |
+| `/auth/login` | Email + OAuth sign-in (included SaaS demo) |
 | `/auth/register` | Email + OAuth sign-up |
 | `/auth/callback` | Supabase OAuth / magic-link exchange (first-timers → `/onboarding`) |
 | `/onboarding` | Short first-run wizard (complete or skip; session-gated) |

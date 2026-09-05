@@ -27,24 +27,24 @@
   },
   "home": {
     "hero": {
-      "title": "Ship a SaaS this week — not another boilerplate",
-      "subtitle": "LaunchPad Web is a $99 one-time Next.js ship kit. Clone it, add Supabase + Stripe keys, and start building.",
-      "cta": "Start from the kit"
+      "title": "Buy the kit. Ship the product.",
+      "subtitle": "LaunchPad Web is a $99 one-time Next.js 15 ship kit with Supabase auth, Stripe billing, onboarding, and a dashboard.",
+      "cta": "Buy on Gumroad"
     },
     "features": {
-      "title": "Features",
-      "subtitle": "Auth, dashboard shell, and a buyer-ready setup — not a kitchen-sink demo",
+      "title": "What’s included",
+      "subtitle": "Auth, onboarding, Stripe, and a dashboard shell — not a kitchen-sink demo",
       "feature1": {
-        "title": "Authentication",
-        "description": "Secure user authentication with multiple providers"
+        "title": "Supabase auth",
+        "description": "Email, OAuth-ready flows, and cookie sessions via @supabase/ssr"
       },
       "feature2": {
-        "title": "Payments",
-        "description": "Integrated subscription management and billing"
+        "title": "Stripe billing",
+        "description": "Hosted Checkout, signed webhooks, and a dashboard plan status"
       },
       "feature3": {
-        "title": "User Management",
-        "description": "Comprehensive user and team management"
+        "title": "Onboarding + dashboard",
+        "description": "First-run wizard and a session-gated app shell you can extend"
       }
     }
   },

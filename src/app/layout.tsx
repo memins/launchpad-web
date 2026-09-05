@@ -15,9 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LaunchPad Web",
+  title: {
+    default: "LaunchPad Web — $99 Next.js SaaS ship kit",
+    template: "%s · LaunchPad Web",
+  },
   description:
-    "A one-time Next.js SaaS ship kit with Supabase Auth, Stripe, and Tailwind CSS. Clone it and start shipping.",
+    "A one-time Next.js 15 SaaS ship kit with Supabase Auth, Stripe billing, onboarding, and a dashboard. $99 on Gumroad.",
   authors: [{ name: "Emin Sahin" }],
   keywords: [
     "LaunchPad Web",
