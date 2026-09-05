@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { LockKeyhole, Mail, Loader2 } from 'lucide-react';
+import { resolvePostAuthPath } from '@/lib/auth-redirect';
 import { createBrowserClient } from '@/lib/supabase';
 import { toast } from '@/components/ui/Toaster';
 
@@ -50,7 +51,10 @@ const LoginForm = () => {
         return;
       }
 
-      router.push(redirectTo);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      router.push(resolvePostAuthPath(user, redirectTo));
       toast.success('Login successful', 'Welcome back!');
     } catch (error) {
       console.error('Login error:', error);
