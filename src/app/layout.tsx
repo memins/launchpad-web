@@ -15,17 +15,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next.js SaaS Boilerplate",
-  description: "A modern, feature-rich SaaS boilerplate built with Next.js, Tailwind CSS, TypeScript, and Supabase.",
-  authors: [{ name: "Your Name" }],
-  keywords: ["Next.js", "SaaS", "Boilerplate", "Tailwind CSS", "TypeScript", "Supabase"],
+  title: "LaunchPad Web",
+  description:
+    "A one-time Next.js SaaS ship kit with Supabase Auth, Stripe, and Tailwind CSS. Clone it and start shipping.",
+  authors: [{ name: "Emin Sahin" }],
+  keywords: [
+    "LaunchPad Web",
+    "Next.js",
+    "SaaS",
+    "ship kit",
+    "Supabase",
+    "Stripe",
+    "Tailwind CSS",
+    "TypeScript",
+  ],
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -38,4 +48,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

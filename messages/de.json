@@ -22,18 +22,18 @@
       "company": "Unternehmen",
       "legal": "Rechtliches",
       "support": "Support",
-      "copyright": "© 2024 SaaS Boilerplate. Alle Rechte vorbehalten."
+      "copyright": "© 2026 LaunchPad Web. Alle Rechte vorbehalten."
     }
   },
   "home": {
     "hero": {
-      "title": "Entwickle dein SaaS schneller mit unserem Boilerplate",
-      "subtitle": "Alles, was du brauchst, um dein SaaS-Produkt an einem Ort zu starten.",
-      "cta": "Starte deine kostenlose Testversion"
+      "title": "Diese Woche ein SaaS shippen — kein weiteres Boilerplate",
+      "subtitle": "LaunchPad Web ist ein einmaliges Next.js Ship-Kit für 99 $. Klonen, Supabase + Stripe eintragen, bauen.",
+      "cta": "Mit dem Kit starten"
     },
     "features": {
       "title": "Funktionen",
-      "subtitle": "Alles, was du zum Aufbau deines SaaS benötigst",
+      "subtitle": "Auth, Dashboard-Shell und ein klares Setup — kein überladenes Demo",
       "feature1": {
         "title": "Authentifizierung",
         "description": "Sichere Benutzerauthentifizierung mit mehreren Anbietern"

@@ -1,6 +1,6 @@
-# Contributing to Next.js SaaS Boilerplate
+# Contributing to LaunchPad Web
 
-Thank you for considering contributing to our Next.js SaaS Boilerplate! This document outlines the rules and guidelines to ensure smooth collaboration and maintain high code quality.
+Thank you for considering contributing to LaunchPad Web. This document outlines the rules and guidelines to keep the ship kit consistent.
 
 ## Cursor/Windsurf Rules
 
@@ -140,8 +140,8 @@ Thank you for considering contributing to our Next.js SaaS Boilerplate! This doc
 1. **Setup**
 
    ```bash
-   git clone https://github.com/yourusername/nextjs-saas-boilerplate.git
-   cd nextjs-saas-boilerplate
+   git clone https://github.com/memins/launchpad-web.git
+   cd launchpad-web
    npm install
    cp .env.example .env.local
    ```
@@ -176,4 +176,4 @@ Thank you for considering contributing to our Next.js SaaS Boilerplate! This doc
 3. The PR may be merged once you have the sign-off of at least one reviewer
 4. Ensure all checks are passing before merging
 
-Thank you for contributing to making this boilerplate better!
+Thank you for helping make LaunchPad Web better.

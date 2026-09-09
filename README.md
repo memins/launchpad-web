@@ -1,144 +1,125 @@
-# Next.js & Supabase SaaS Boilerplate
+# LaunchPad Web
 
-A modern, feature-rich SaaS boilerplate built with Next.js, Tailwind CSS, TypeScript, and Supabase.
+A paid, one-time **Next.js SaaS ship kit** — not a generic boilerplate. Clone it, wire Supabase + Stripe, and start shipping a product instead of scaffolding auth, billing hooks, and a dashboard from scratch.
 
-## Features
+**Price:** $99 on [Gumroad](https://gumroad.com) (one-time). Built by [Emin Sahin](https://github.com/memins).
 
-- 🔐 **Authentication** - Email/password and social logins via Supabase Auth
-- 👮‍♂️ **Role-based Access Control** - Admin, User, and Guest roles with middleware protection
-- 📊 **Admin Dashboard** - Manage users, content, and payments
-- 🏠 **Landing Page** - Modern, responsive marketing page
-- 📝 **Blog System** - Create and manage blog content
-- 💳 **Stripe Integration** - Subscriptions and one-time payments
-- 🔄 **Type Safety** - End-to-end TypeScript with Zod validation
-- 🎯 **Optimistic UI** - Instant feedback with background syncing
-- 📋 **Forms System** - React Hook Form with Zod validation
-- 🚨 **Error Handling** - Global error boundaries and form-level validation
-- 👤 **User Profiles** - Complete profile management system
-- 🔍 **SEO Ready** - Dynamic meta tags and OpenGraph support
-- 📱 **Responsive Design** - Mobile-first with dark/light mode
-- 📄 **Pagination** - Client and server-side pagination
-- 🏗️ **Code Scaffolding** - Generate new components and pages quickly
-- 🌐 **Server-side Rendering** - SEO-friendly with App Router
-- 🕒 **Timezone Awareness** - Localized date/time handling
-- 🌍 **Internationalization** - Multi-language support / Internationalized Routing
+Stack: **Next.js App Router**, **TypeScript**, **Tailwind CSS 4**, **Supabase Auth (`@supabase/ssr`)**, **Stripe helper**, **Resend**.
 
-## Tech Stack
+## What’s in the kit
 
-- **Framework**: Next.js (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **UI Components**: shadcn/ui
-- **Forms**: React Hook Form + Zod
-- **Backend**: Supabase (Auth, Database, Storage)
-- **Payments**: Stripe
-- **Animations**: Framer Motion
+- Email / password + OAuth-ready auth with cookie sessions (`@supabase/ssr`)
+- First-run onboarding wizard (display name + optional workspace) gated by middleware
+- Protected `/dashboard` via middleware
+- Marketing landing you can rebrand in one pass
+- Stripe client helper (Checkout + webhooks come in a follow-up drop)
+- i18n-ready `/en` and `/de` landing variants
+- Plop generators for pages, components, hooks, and API routes
 
-## Getting Started
+## 10-minute setup
 
-### Prerequisites
+### 1. Clone and install
 
-- Node.js 18+ and npm
-- Supabase account
-- Stripe account (for payment features)
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/memins/nextjs-supabase-saas-boilerplate
-   cd nextjs-supabase-saas-boilerplate
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Copy the example environment file:
-
-   ```bash
-   cp .env.example .env.local
-   ```
-
-4. Update the environment variables in `.env.local` with your Supabase and Stripe credentials.
-
-5. Start the development server:
-
-   ```bash
-   npm run dev
-   ```
-
-6. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Project Structure
-
-```
-├── public/              # Static assets
-├── src/
-│   ├── app/             # App Router pages and layouts
-│   │   ├── ui/          # shadcn/ui components
-│   │   ├── layout/      # Layout components
-│   │   └── forms/       # Form components
-│   ├── lib/             # Utility functions
-│   ├── hooks/           # Custom React hooks
-│   ├── middleware.ts    # Next.js middleware for auth protection
-│   ├── types/           # TypeScript type definitions
-│   ├── server/          # Server-only code (API routes, database)
-│   └── styles/          # Global styles
-└── ...config files
+```bash
+git clone https://github.com/memins/launchpad-web.git
+cd launchpad-web
+cp .env.example .env.local
+npm install
 ```
 
-## Development Workflow
+### 2. Supabase (~4 minutes)
 
-- **Feature Development**: Create a new feature branch from `main`
-- **Component Creation**: Use the generator with `npm run generate component`
-- **Page Creation**: Use the generator with `npm run generate page`
-- **API Creation**: Follow the server actions pattern in the App Router
+1. Create a project at [supabase.com](https://supabase.com).
+2. **Project Settings → API**: copy **Project URL** and **anon public** key into `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+3. Copy the **service_role** key into `SUPABASE_SERVICE_ROLE_KEY` (server-only — never expose it to the browser).
+4. **Authentication → Providers**: enable Email. Optionally enable Google / Apple.
+5. **Authentication → URL configuration**
+   - Site URL: `http://localhost:3000`
+   - Redirect URLs: `http://localhost:3000/auth/callback`
+6. **SQL Editor**: open `supabase/migrations/20240904210000_create_profiles.sql`, paste it, and run it.
+   This creates `public.profiles` (display name, workspace, onboarding timestamp), RLS so users only touch their own row, and a trigger that inserts a profile on signup. No extra env vars.
 
-## Environment Variables
+### 3. Stripe (~3 minutes)
 
-Required environment variables:
+1. Create a [Stripe](https://stripe.com) account and toggle **test mode**.
+2. **Developers → API keys**: set `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY`.
+3. Create a product / price and paste the price id into `STRIPE_PRICE_ID` (used when Checkout ships).
+4. Leave `STRIPE_WEBHOOK_SECRET` blank until you add a webhook endpoint.
 
+### 4. Email (optional)
+
+Create a [Resend](https://resend.com) API key and set `RESEND_API_KEY` plus `RESEND_FROM_EMAIL`. Skip this until you send transactional mail.
+
+### 5. Run locally
+
+```bash
+npm run dev
 ```
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# Stripe
-STRIPE_SECRET_KEY=your-stripe-secret-key
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your-stripe-publishable-key
-STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
-```
+Open [http://localhost:3000](http://localhost:3000). Sign up at `/auth/register` — new users land on `/onboarding` (complete or skip), then `/dashboard`. Returning users who already finished onboarding go straight to the app.
 
-## Deployment
+## Environment variables
 
-This template is optimized for deployment on Vercel:
+Copy `.env.example` → `.env.local`. Every key is documented there:
+
+| Variable | Required to boot | Where to get it |
+| --- | --- | --- |
+| `NEXT_PUBLIC_APP_URL` | Yes | Your site origin |
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase → Settings → API |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Supabase → Settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | Admin/server only | Supabase → Settings → API |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | For Stripe helper | Stripe → API keys |
+| `STRIPE_SECRET_KEY` | For Stripe helper | Stripe → API keys |
+| `STRIPE_WEBHOOK_SECRET` | Later (Checkout) | Stripe → Webhooks |
+| `STRIPE_PRICE_ID` | Later (Checkout) | Stripe → Products |
+| `RESEND_API_KEY` | Optional | Resend dashboard |
+| `RESEND_FROM_EMAIL` | Optional | Your sending domain |
+
+## Deploy to Vercel
+
+1. Push this repo to GitHub (or import `memins/launchpad-web`).
+2. [vercel.com/new](https://vercel.com/new) → import the repo.
+3. Add the same env vars from `.env.local` (Production + Preview).
+4. Set `NEXT_PUBLIC_APP_URL` to `https://your-domain.vercel.app`.
+5. In Supabase Auth URL config, add `https://your-domain.vercel.app` and `https://your-domain.vercel.app/auth/callback`.
+6. Deploy. Framework preset: **Next.js**.
 
 ```bash
 npm run build
-# Then deploy with Vercel CLI or GitHub integration
+npx vercel --prod
 ```
 
-## Contribution Guidelines
+## Auth routes
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+One App Router tree — no locale-prefixed duplicates:
+
+| Path | Purpose |
+| --- | --- |
+| `/auth/login` | Email + OAuth sign-in |
+| `/auth/register` | Email + OAuth sign-up |
+| `/auth/callback` | Supabase OAuth / magic-link exchange (first-timers → `/onboarding`) |
+| `/onboarding` | Short first-run wizard (complete or skip; session-gated) |
+| `/dashboard` | Session-gated app shell (redirects here after onboarding) |
+| `/dashboard/profile` | Edit the same profile fields collected during onboarding |
+
+## Scripts
+
+```bash
+npm run dev       # Next.js dev server
+npm run build     # Production build
+npm run start     # Serve the production build
+npm run lint      # ESLint
+npm run generate  # Plop scaffolding
+```
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+LaunchPad Web is a **commercial kit**, not MIT. Buyers may build and ship apps. You may not resell or redistribute the kit itself. See [`LICENSE`](./LICENSE).
 
 ## Acknowledgements
 
 - [Next.js](https://nextjs.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Supabase](https://supabase.io/)
+- [Supabase](https://supabase.com/)
 - [Stripe](https://stripe.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Resend](https://resend.com/)

@@ -1,6 +1,6 @@
 /**
  * Plop JS
- * Code generator for the Next.js SaaS Boilerplate
+ * Code generator for LaunchPad Web
  */
 module.exports = function (plop) {
   // Component generator

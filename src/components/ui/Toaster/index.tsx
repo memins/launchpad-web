@@ -1,6 +1,5 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
@@ -58,23 +57,18 @@ export const toast = {
  * Toaster component for displaying toast notifications
  */
 export function Toaster() {
-  const { theme } = useTheme();
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [mounted, setMounted] = useState(false);
 
-  // Handle hydration
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  if (!mounted) return null;
 
   useEffect(() => {
     const unsubscribe = toastEvent.listen((toast) => {
       const id = Math.random().toString(36).substring(2, 9);
       setToasts((prev) => [...prev, { ...toast, id }]);
 
-      // Auto remove toast after duration
       if (toast.duration) {
         setTimeout(() => {
           setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -84,6 +78,8 @@ export function Toaster() {
 
     return () => unsubscribe();
   }, []);
+
+  if (!mounted) return null;
 
   const removeToast = (id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
